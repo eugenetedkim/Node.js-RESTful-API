@@ -1,0 +1,100 @@
+https://www.youtube.com/watch?v=blQ60skPzl0&ab_channel=Academind
+
+mkdir node-rest-shop
+cd node-rest-shop
+
+Now we have an empty folder which we need to put under control of NPM, Node's package manager because we'll need to install a couple of dependencies and we'll install them through NPM, this dependency manager tool. For that we'll need Node.js and we'll need this anyway because we're going to create a Node RESTful API so having Node makes a lot of sense. Once you've got Node.js, in the  project folder, simply type in npm init in the project folder which will walk you through a wizard which allows us to initialize that. Now if you take a look, you'll have a package.json which was created.
+
+Now do a npm install --save express (--save creates an entry in the package.json file) because we'll use Express as a framework for Node.js to make building this API a bit easier.
+
+With Express installed, we'll add a new file to the project called server.js. Here we'll set up all the code to spin up our Node.js server which we'll do through JavaScript code, unlike in PHP where we have a separate server software which is then kind of connected to our PHP script and stuff. Instead, we create a server in JavaScript when using Node.js.
+
+Now how do we create that server then?
+
+Well, first of all, we'll import soething from Node.js and we'll store that in a constant name, http (const and let are next generation Javascript features which Node.js and later versions support).
+
+We'll import it with require http.
+
+const http = require('http');
+
+Now, if you worked with a lot of singe page applications or with front-end Javascript development in general, you might be used to the import something from something syntax. Now this syntax is not yet supported in Node.js, hence, we'll be importing using require since this is the only import syntax we have in Node.js.
+
+So this http package we're importing here provides us some functionality for spinning up a server. Additionally, we'll create a new const, port, where we'll assign a port at which our project should run and we'll want to get that port through an environment variable or hardcode it in there.
+
+const port = process.env.PORT || 3000;
+
+Now, the environment variable would be process.env.PORT and process.env simply accesses Node.js environement variables and would be set, for example, on the server you deployed it on. Most hosting providers off you the opportunity or offer tools to inject enviroment varibles into your running project and then you would simply add this port environment variable. If it's not set however, we'll use 3000 as a default port.
+
+Thereafer, we'll create our server and store it in a constant with this http package and then the createServer command.
+
+const server = http.createServer();
+
+Now to create the server, we need to pass a listener or a function which is esentially executed whenever we get a new request and which then in turn is responsible for returning the response.  We'll leave this empty for now but we'll add something soon. 
+What we have here so far with this setup wouldn't really work because we need to handle incoming requests.
+
+Then, after, we'll call server.listen() to start the server and we'll pass in the port as an argument so it starts listening on this port and then it will execute whichever listener or function we passed to createServer. That's the idea.
+
+server.listen(port);
+
+Now, this is a very simple server setup.
+
+Let's now add a second file, app.js, and this file is now going to spin up our Express application which will make handling requests a bit easier for us.
+
+So how does this now work?
+
+In our app.js file, create a new constant named express and require Express which is the package we installed with NPM --save.
+
+const express = require('express');
+
+Then, we'll create a new constanct named app and just execute Express like a function.
+
+This will spin up an Express application where we can use all kinds of utility methods and so on.
+
+We'll add more functionality to this file but for now we'll simply add app and then call a method on app and that method will just be use.
+
+Now use, as a method, sets up a, so-called, middleware.
+
+So, an incoming request has to go through app.use() and to whatever we pass to it.
+
+Now, the thing we pass to it can have different formats.
+
+It can simply be a function, like an arrow function. You can also use a normal function where you get the request, response, and some special next function (the third argument here is actually a function which you can execute to move the request to the next middleware in line and if you don't execute it, the request won't go there).
+
+Here, what you could do is simply use response to send a response then apply the status method (that takes a status code) which we'll set to 200 for everything's okay and then apply the json method which will send a JSON response with the right headers setup and so on. From there, you can pass a JavaScript object which will be automatically stringified for us because JSON data sent over the wire is in string format and there we could add a message property or whatever we want, and simply say "it works". 
+
+app.use((req, res, next) => {
+  res.status(200).json({
+    message: 'It works!'
+  });
+});
+
+Now, with that setup, what we'll have to do at the end of the file is add module.exports and set this equal to app.
+
+module.exports = app;
+
+With that, let's save our file and go back to server.js.
+
+Now, import app with require and point to ./app which we just setup.
+
+const app = require('./app');
+
+We can omit the file extension because Node.js will automatically look for the JavaScript file.
+
+Now, we pass app to createServer and the Express application qualifies as a request handler.
+
+So, with that, we have a setup that should actually work and allow us to send any type of request (e.g. GET) to this back end and this middleware should make sure that we actually receive a response.
+
+Let's try it out so in the terminal, in your project folder, where you ran NPM install, you can now run node to start something with the Node.js library and target server.js and this will execute it with Node.js.
+
+Keep this process running. It doesn't finish. It's not stuck. It should keep on runnig because we just started our server.
+
+Since, we started this on our machine, it runs on localhost, and then on port 3000 because we don't have our environment variables.
+
+Go to localhost:3000 and you should see a message, "it works".
+
+You should also see this if you send some different kind of request, like a POST request.
+
+Now we can't easily simulate a POST request through the browser, using a tool called Postman which helps developing APIs.
+
+It allows you to simulate all different types of requests.
+
